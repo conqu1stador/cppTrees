@@ -160,7 +160,7 @@ public:
         { 
             std::cout << node->data << '\n';
             if(node->left != nullptr) {
-                std::cout << "Слева " << node->left->data;
+                std::cout << "Слева " << node->left->data << '\n';
             }
             if(node->right != nullptr) {
                 std::cout << "Справа " << node->right->data << '\n';
@@ -183,19 +183,24 @@ int main() {
     srand(time(NULL));
     RBST<int> a(50);
     int aaa;
-    std::cout << a.getRoot() << " " << a.getRoot()->data << '\n';
     a.insert(a.getRoot(), 40);
-    std::cout << a.getRoot() << " " << a.getRoot()->data << '\n';
+    a.order(a.getRoot());
+    std::cout << "end" << '\n';
     a.insert(a.getRoot(), 70);
-    std::cout << a.getRoot() << " " << a.getRoot()->data << '\n';
+    a.order(a.getRoot());
+    std::cout << "end" << '\n';
     a.insert(a.getRoot(), 60);
-    std::cout << a.getRoot() << " " << a.getRoot()->data << '\n';
+    a.order(a.getRoot());
+    std::cout << "end" << '\n';
     a.insert(a.getRoot(), 80);
-    std::cout << a.getRoot() << " " << a.getRoot()->data << '\n';
+    a.order(a.getRoot());
+    std::cout << "end" << '\n';
     a.insert(a.getRoot(), 120);
-    std::cout << a.getRoot() << " " << a.getRoot()->data << '\n';
+    a.order(a.getRoot());
+    std::cout << "end" << '\n';
     a.insert(a.getRoot(), 35);
-    std::cout << a.getRoot() << " " << a.getRoot()->data << '\n';
+    a.order(a.getRoot());
+    std::cout << "end" << '\n';
     a.insert(a.getRoot(), 55);
 
     std::cout << a.getRoot() << " " << a.getRoot()->data << "\n\n\n";
