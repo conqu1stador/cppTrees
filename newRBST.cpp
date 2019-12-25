@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <ctime>
+#include <string>
 
 template <typename T>
 struct TNode {
@@ -15,7 +16,6 @@ struct TNode {
 };
 
 long long duplicate = 0;
-
 
 template <typename T>
 class RBST {
