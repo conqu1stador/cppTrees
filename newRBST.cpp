@@ -378,7 +378,7 @@ private:
 int main() {
     clock_t start = clock();
     srand(time(NULL));
-    int size = 100;
+    const int size = 100;
     int rbstArr[size], bstArr[size];
     for(int k = 0; k != size; ++k) {
         int rnd = rand() % (size*10); 
