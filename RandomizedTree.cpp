@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 
 template <typename T>
 struct TNode {
