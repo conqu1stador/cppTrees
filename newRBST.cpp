@@ -84,11 +84,13 @@ public:
         }
 
         if(node->data > key) {
+            insertCounter++;
             node->left = insertRoot(node->left, key);
             return rotateRight(node);
         }
 
         else {
+            insertCounter++;
             node->right = insertRoot(node->right, key);
             return rotateLeft(node);
         }
@@ -127,9 +129,10 @@ public:
         //    }
         // }
 
+        insertCounter++;
         if(node->data > key)
             node->left = insert(node->left, key);
-        else
+        else if(node->data < key)
             node->right = insert(node->right, key);
         fixSize(node);
         root = node;
