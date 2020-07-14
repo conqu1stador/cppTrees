@@ -104,30 +104,30 @@ public:
         }
 
         // if(rand() % (node->size + 1) == 0) {
-        //     insertCounter++;   
+        //     insertCounter++;
         //     return insertRoot(node, key);
         // }
 
-        if(node->left != nullptr && node->right != nullptr) {
+        /*if(node->left != nullptr && node->right != nullptr) {
             if(node->left->size < node->right->size*2)
                 if(rand() % (node->left->size + 1) == 0) {
                     insertCounter++;
                     return insertRoot(node, key);
                 }
-                    
+
             if(node->left->size > node->right->size*2)
                 if(rand() % (node->right->size + 1) == 0) {
                     insertCounter++;
                     return insertRoot(node, key);
-                } 
-        }
+                }
+        }*/
 
-        // if(node->left != nullptr && node->right != nullptr) {
-        //    if((node->left->size > node->right->size*2) || (node->left->size*2 < node->right->size)) {
-        //        insertCounter++;
-        //        return insertRoot(node, key);
-        //    }
-        // }
+        if(node->left != nullptr && node->right != nullptr) {
+            if((node->left->size > node->right->size*2) || (node->left->size*2 < node->right->size)) {
+                insertCounter++;
+                return insertRoot(node, key);
+            }
+         }
 
         insertCounter++;
         if(node->data > key)
