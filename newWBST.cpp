@@ -4,6 +4,8 @@
 #include <ctime>
 #include <string>
 
+int counterWBST = 0, counterBST = 0;
+
 template <typename T>
 struct TNode {
     TNode(T k) {
@@ -15,15 +17,14 @@ struct TNode {
 };
 
 template <typename T>
-class RBST {
+class WBST {
 public:
-    int insertCounter = 0;
 
     std::ofstream outTgf, help;
-    RBST(T k) {
+    WBST(T k) {
         root = new TNode<T>(k);
-        outTgf.open("outputRBST.tgf");
-        help.open("helpRBST.txt");
+        outTgf.open("outputWBST.tgf");
+        help.open("helpWBST.txt");
         help << "#\n";
     }
 
@@ -40,6 +41,7 @@ public:
 
     int getSize(TNode<T>* node)
     {
+        counterWBST += 2;
         if(node == nullptr)
             return 0;
         return node->size;
@@ -47,12 +49,14 @@ public:
 
     void fixSize(TNode<T>* node)
     {
+        counterWBST += 4;
         node->size = getSize(node->left) + getSize(node->right) + 1;
     }
 
     TNode<T>* rotateRight(TNode<T>* node)
     {
         TNode<T>* temp = node->left;
+        counterWBST += 3;
         if(temp == nullptr)
             return node;
         node->left = temp->right;
@@ -60,6 +64,7 @@ public:
         temp->size = node->size;
 	    fixSize(node);
         root = temp;
+        counterWBST += 8;
         return temp;
     }
 
@@ -80,17 +85,18 @@ public:
     {
         if(node == nullptr) {
             TNode<T> *newNode = new TNode<T>(key);
+            counterWBST += 3;
             return newNode;
         }
 
         if(node->data > key) {
-            insertCounter++;
+            counterWBST += 4;
             node->left = insertRoot(node->left, key);
             return rotateRight(node);
         }
 
         else {
-            insertCounter++;
+            counterWBST += 2;
             node->right = insertRoot(node->right, key);
             return rotateLeft(node);
         }
@@ -100,42 +106,45 @@ public:
     {
         if(node == nullptr) {
             TNode<T> *newNode = new TNode<T>(key);
+            counterWBST += 3;
             return newNode;
         }
 
         // if(rand() % (node->size + 1) == 0) {
-        //     insertCounter++;
         //     return insertRoot(node, key);
         // }
 
         /*if(node->left != nullptr && node->right != nullptr) {
             if(node->left->size < node->right->size*2)
                 if(rand() % (node->left->size + 1) == 0) {
-                    insertCounter++;
                     return insertRoot(node, key);
                 }
 
             if(node->left->size > node->right->size*2)
                 if(rand() % (node->right->size + 1) == 0) {
-                    insertCounter++;
                     return insertRoot(node, key);
                 }
         }*/
 
         if(node->left != nullptr && node->right != nullptr) {
+            counterWBST += 4;
             if((node->left->size > node->right->size*2) || (node->left->size*2 < node->right->size)) {
-                insertCounter++;
+                counterWBST += 12;
                 return insertRoot(node, key);
             }
          }
 
-        insertCounter++;
-        if(node->data > key)
+        if(node->data > key) {
+            counterWBST += 4;
             node->left = insert(node->left, key);
-        else if(node->data < key)
+        }
+        else if(node->data < key) {
+            counterWBST += 4;
             node->right = insert(node->right, key);
+        }
         fixSize(node);
         root = node;
+        counterWBST += 1;
         return node;
     }
 
@@ -145,8 +154,9 @@ public:
             return node2;
         if(node2 == nullptr)
             return node1;
-
-        if(rand() % (node1->size + node2->size) < node1->size)
+        // node1->size < node2->size - перебалансировка, результат лучше, но больше операций (предположительно)
+        // node1->size > node2->size - обратная ситуация
+        if(node1->size < node2->size)
         {
             node1->right = join(node1->right, node2);
             fixSize(node1);
@@ -155,7 +165,7 @@ public:
         }
         else
         {
-            node2->left = join(node1,node2->left);
+            node2->left = join(node1, node2->left);
             fixSize(node2);
             root = node2;
             return node2;
@@ -188,11 +198,11 @@ public:
             outTgf << counter << " " << node->data << '\n';
             counter++;
             if(node->left != nullptr) {
-                //std::cout << "Слева " << node->left->data << '\n';
+                //std::cout << "Left " << node->left->data << '\n';
                 help << node->data << " " << node->left->data << '\n';
             }
             if(node->right != nullptr) {
-                //std::cout << "Справа " << node->right->data << '\n';
+                //std::cout << "Right " << node->right->data << '\n';
                 help << node->data << " " << node->right->data << '\n';
             }
             //std::cout << "-----" << '\n';
@@ -226,8 +236,8 @@ public:
         outTgf.close();
         help.close();
         std::ifstream readHelp;
-        outTgf.open("outputRBST.tgf", std::ios::app);
-        readHelp.open("helpRBST.txt");
+        outTgf.open("outputWBST.tgf", std::ios::app);
+        readHelp.open("helpWBST.txt");
         std::string line;
         while(std::getline(readHelp, line)) {
             outTgf << line << '\n';
@@ -271,15 +281,20 @@ public:
     BTNode<T>* insert(BTNode<T>* node, T key)
     {
         if (node == nullptr) {
+            counterBST += 3;
             BTNode<T> *newNode = new BTNode<T>(key);
             return newNode;
         }
 
-        else if (key < node->data)
+        else if (key < node->data) {
+            counterBST += 4;
             node->left = insert(node->left, key);
+        }
 
-        else if (key > node->data)
+        else if (key > node->data) {
+            counterBST += 4;
             node->right = insert(node->right, key);
+        }
 
         return node;
     }
@@ -396,10 +411,10 @@ int main() {
     clock_t start = clock();
     srand(time(NULL));
     const int size = 1000;
-    int rbstArr[size], bstArr[size], insertCounter = 0;
+    int wbstArr[size], bstArr[size];
     for(int k = 0; k != size; ++k) {
         int rnd = rand() % (size*10);
-        RBST<int> a(rnd);
+        WBST<int> a(rnd);
         BST<int> c(rnd);
         int b[size];
         for(int i = 0; i != size; ++i) {
@@ -421,24 +436,38 @@ int main() {
         }
         a.printFile();
         c.printFile();
-        rbstArr[k] = a.height(a.getRoot());
+        wbstArr[k] = a.height(a.getRoot());
         bstArr[k] = c.height(c.getRoot());
-        insertCounter += a.insertCounter;
     }
-    std::cout << "RBST / BST \n";
-    std::ofstream wordRbst, wordBst, wordDraw;
-    wordRbst.open("wordRbst.txt"); wordBst.open("wordBst.txt");
-    int countRbst = 0, countBst = 0, draw = 0;
+
+    std::cout << "WBST / BST \n";
+    std::ofstream wordWbst, wordBst, wordDraw;
+    wordWbst.open("wordWbst.txt"); wordBst.open("wordBst.txt");
+    int countWbst = 0, countBst = 0, draw = 0;
     for(int i = 0; i != size; ++i) {
-        wordRbst << rbstArr[i] << "\n"; wordBst << bstArr[i] << '\n';
-        if(rbstArr[i] < bstArr[i])  ++countRbst;
-        if(rbstArr[i] > bstArr[i])  ++countBst;
-        if(rbstArr[i] == bstArr[i])  ++draw;
+        wordWbst << wbstArr[i] << "\n"; wordBst << bstArr[i] << '\n';
+        if(wbstArr[i] < bstArr[i])  ++countWbst;
+        if(wbstArr[i] > bstArr[i])  ++countBst;
+        if(wbstArr[i] == bstArr[i])  ++draw;
     }
-    std::cout << "RBST better " << countRbst << " / All " << size << '\n';
+    std::cout << "WBST better " << countWbst << " / All " << size << '\n';
     std::cout << "BST better " << countBst << " / All " << size << '\n';
     std::cout << "draw " << draw << " / All " << size << '\n';
-    std::cout << "avg insertCounter " << insertCounter/size << '\n';
+    std::cout << "operation WBST/BST " << counterWBST/size << " / " << counterBST/size << '\n';
     clock_t end = clock();
     std::cout << (((double)end-start)/CLOCKS_PER_SEC)*1000 << "ms";
+
+    /*WBST<int> a(50);
+    a.insert(a.getRoot(), 40);
+    a.insert(a.getRoot(), 60);
+    a.insert(a.getRoot(), 20);
+    a.insert(a.getRoot(), 45);
+    a.insert(a.getRoot(), 10);
+    a.insert(a.getRoot(), 25);
+    a.insert(a.getRoot(), 5);
+    a.insert(a.getRoot(), 13);
+    a.insert(a.getRoot(), 15);
+
+    a.remove(a.getRoot(),15);
+    a.order(a.getRoot());*/
 }
