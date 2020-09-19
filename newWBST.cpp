@@ -4,7 +4,8 @@
 #include <ctime>
 #include <string>
 
-int counterWBST = 0, counterBST = 0;
+long long counterWBST = 0, counterBST = 0,
+            avgHWBST = 0, avgHBST = 0;
 
 template <typename T>
 struct TNode {
@@ -110,11 +111,11 @@ public:
             return newNode;
         }
 
-        // if(rand() % (node->size + 1) == 0) {
-        //     return insertRoot(node, key);
-        // }
+        /*if(rand() % (node->size + 1) == 0) {
+             return insertRoot(node, key);
+        }
 
-        /*if(node->left != nullptr && node->right != nullptr) {
+        if(node->left != nullptr && node->right != nullptr) {
             if(node->left->size < node->right->size*2)
                 if(rand() % (node->left->size + 1) == 0) {
                     return insertRoot(node, key);
@@ -410,7 +411,7 @@ private:
 int main() {
     clock_t start = clock();
     srand(time(NULL));
-    const int size = 1000;
+    const int size = 5000;
     int wbstArr[size], bstArr[size];
     for(int k = 0; k != size; ++k) {
         int rnd = rand() % (size*10);
@@ -438,6 +439,9 @@ int main() {
         c.printFile();
         wbstArr[k] = a.height(a.getRoot());
         bstArr[k] = c.height(c.getRoot());
+
+        avgHWBST += a.height(a.getRoot());
+        avgHBST += c.height(c.getRoot());
     }
 
     std::cout << "WBST / BST \n";
@@ -454,6 +458,7 @@ int main() {
     std::cout << "BST better " << countBst << " / All " << size << '\n';
     std::cout << "draw " << draw << " / All " << size << '\n';
     std::cout << "operation WBST/BST " << counterWBST/size << " / " << counterBST/size << '\n';
+    std::cout << "avg height WBST/BST " << avgHWBST/size << " / " << avgHBST/size << '\n';
     clock_t end = clock();
     std::cout << (((double)end-start)/CLOCKS_PER_SEC)*1000 << "ms";
 
